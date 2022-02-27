@@ -7,6 +7,7 @@
 #define SAOVIZINHOS 5
 #define REMOVERVERTICE 6
 #define REMOVERARESTA 7
+#define TAMANHOROTULO 10
 
 
 void menuInterface()
@@ -15,83 +16,80 @@ void menuInterface()
     Grafo *grafo = criarGrafo();
     do
     {
-        printf("Digite a sua ação:\n");
+        printf("Digite a sua acao:\n");
         printf("Sair -------------------------------> \"0\"\n");
-        printf("Adicionar Vértice ------------------> \"1\"\n");
+        printf("Adicionar Vertice ------------------> \"1\"\n");
         printf("Adicionar Aresta -------------------> \"2\"\n");
-        printf("Verificar Grau do Vérice -----------> \"3\"\n");
+        printf("Verificar Grau do Verice -----------> \"3\"\n");
         printf("Imprimir Grafo ---------------------> \"4\"\n");
-        printf("Verificar se Vértices são vizinhos -> \"5\"\n");
-        printf("Remover Vértice --------------------> \"6\"\n");
+        printf("Verificar se Vertices sao vizinhos -> \"5\"\n");
+        printf("Remover Vertice --------------------> \"6\"\n");
         printf("Remover Aresta ---------------------> \"7\"\n");
-
+        printf("Insira o ID da operacao: ");
         scanf("%d", &acao);
 
-        Rotulo *rotulo;
-        Rotulo *rotuloA;
-        Rotulo *rotuloB;
-
-        switch (acao)
+        if(acao == ADICIONARVERTICE)
         {
-        case ADICIONARVERTICE:
-            rotulo = (Rotulo*)calloc(10, sizeof(Rotulo));
-            printf("Rótulo do vértice a ser criado: ");
+            Rotulo rotulo[TAMANHOROTULO];
+            printf("Rotulo do vertice a ser criado: ");
             scanf(" %s", rotulo);
             inserirVertice(grafo, rotulo);
             imprimirGrafo(grafo);
-            break;
-        case ADICIONARARESTA:
-            rotuloA = (Rotulo*)calloc(10, sizeof(Rotulo));
-            rotuloB = (Rotulo*)calloc(10, sizeof(Rotulo));
-            printf("Rótulo do primeiro vértice: ");
+        }
+        else if(acao == ADICIONARARESTA)
+        {
+            Rotulo rotuloA[TAMANHOROTULO];
+            Rotulo rotuloB[TAMANHOROTULO];
+            printf("Rotulo do primeiro vertice: ");
             scanf(" %s", rotuloA);
-            printf("Rótulo do segundo vértice: ");
+            printf("Rotulo do segundo vertice: ");
             scanf(" %s", rotuloB);
             inserirAresta(grafo, rotuloA, rotuloB);
             imprimirGrafo(grafo);
-            break;
-        case GRAU:
-            rotulo = (Rotulo*)calloc(10, sizeof(Rotulo));
-            printf("Rótulo do vértice: ");
+        }
+        else if(acao == GRAU)
+        {
+            Rotulo rotulo[TAMANHOROTULO];
+            printf("Rotulo do vertice: ");
             scanf(" %s", rotulo);
             printf("Grau: %d\n", grauVertice(rotulo, grafo));
-            break;
-        case IMPRIMIR:
+        }
+        else if(acao == IMPRIMIR)
+        {
             imprimirGrafo(grafo);
-            break;
-        case SAOVIZINHOS:
-            rotuloA = (Rotulo*)calloc(10, sizeof(Rotulo));
-            rotuloB = (Rotulo*)calloc(10, sizeof(Rotulo));
-            printf("Rótulo do primeiro vértice: ");
+        }
+        else if(acao == SAOVIZINHOS)
+        {
+            Rotulo rotuloA[TAMANHOROTULO];
+            Rotulo rotuloB[TAMANHOROTULO];
+            printf("Rotulo do primeiro vertice: ");
             scanf(" %s", rotuloA);
-            printf("Rótulo do segundo vértice: ");
+            printf("Rotulo do segundo vertice: ");
             scanf(" %s", rotuloB);
             bool vizinhos = saoVizinhos(rotuloA, rotuloB, grafo);
             if(vizinhos) printf("SIM\n");
-            else printf("NÃO\n");
-            break;
-        case REMOVERVERTICE:
-            rotulo = (Rotulo*)calloc(10, sizeof(Rotulo));
-            printf("Rótulo do vértice a ser excluído: ");
+            else printf("NAO\n");
+        }
+        else if(acao == REMOVERVERTICE)
+        {
+            Rotulo rotulo[TAMANHOROTULO];
+            printf("Rotulo do vertice a ser excluido: ");
             scanf(" %s", rotulo);
-            removerVertice(grafo, rotulo);
+            removerVertice(grafo, rotulo, false);
             imprimirGrafo(grafo);
-            break;
-        case REMOVERARESTA:
-            rotuloA = (Rotulo*)calloc(10, sizeof(Rotulo));
-            rotuloB = (Rotulo*)calloc(10, sizeof(Rotulo));
-            printf("Rótulo do primeiro vértice: ");
+        }
+        else if(acao == REMOVERARESTA)
+        {
+            Rotulo rotuloA[TAMANHOROTULO];
+            Rotulo rotuloB[TAMANHOROTULO];
+            printf("Rotulo do primeiro vertice: ");
             scanf(" %s", rotuloA);
-            printf("Rótulo do segundo vértice: ");
+            printf("Rotulo do segundo vertice: ");
             scanf(" %s", rotuloB);
             removerAresta(grafo, rotuloA, rotuloB, false);
             imprimirGrafo(grafo);
-            break;
-        case SAIR:
-        break;
-        default:
-            printf("Comando inválido!\n");
-            break;
         }
+        else if(acao == SAIR) printf("Programa encerrado.\n");
+        else printf("Comando inválido!\n");
     } while (acao);
 }

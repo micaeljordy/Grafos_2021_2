@@ -63,6 +63,7 @@ ListaVertice * buscarVertice(Rotulo *valor, Grafo *grafo)
 {
     if(!grafo) return NULL;
     ListaVertice *V = grafo->V;
+    if(!strcmp(valor, "_")) return V;
     while (V)
     {
         if(V->vertice)
@@ -80,7 +81,9 @@ Vertice * inserirVertice(Grafo *grafo, Rotulo *valor)
     Vertice *vertice;
     vertice = (Vertice*) malloc(sizeof(Vertice));
     if(!vertice) return NULL;
-    vertice->rotulo = valor;
+    Rotulo *rotulo = (Rotulo*)calloc(sizeof(valor)/sizeof(Rotulo), sizeof(Rotulo));
+    strcpy(rotulo, valor);
+    vertice->rotulo = rotulo;
     
     if(!(grafo->V->vertice)) 
     {
@@ -139,11 +142,11 @@ bool removerAresta(Grafo *grafo, Rotulo *valorA, Rotulo *valorB, bool recursivo)
     free(alvo->aresta);
     alvo->aresta = NULL;
     if(alvo->anterior)free(alvo);
-    if(recursivo) return removerAresta(grafo, valorA, valorB, true);
+    if(recursivo) removerAresta(grafo, valorA, valorB, true);
     return true;
 }
 
-bool removerVertice(Grafo *grafo, Rotulo *valor)
+bool removerVertice(Grafo *grafo, Rotulo *valor, bool recursivo)
 {
     if(!grafo) return false;
     if(!(grafo->V->vertice)) return false;
@@ -159,6 +162,7 @@ bool removerVertice(Grafo *grafo, Rotulo *valor)
     free(alvo->vertice);
     alvo->vertice = NULL;
     if(alvo->anterior)free(alvo);
+    if(recursivo) removerVertice(grafo, valor, true);
     return true;
 }
 
@@ -199,23 +203,58 @@ Aresta * inserirAresta(Grafo *grafo, Rotulo *valorA, Rotulo *valorB)
     return aresta;
 }
 
+Grafo* copiarGrafo(Grafo *grafo)
+{
+    if(!grafo) return NULL;
+    Grafo *copia = criarGrafo();
+    ListaVertice *V = grafo->V;
+    while (V)
+    {
+        if(V->vertice) inserirVertice(copia, V->vertice->rotulo);
+        V = V->proximo;
+    }
+    ListaAresta *E = grafo->E; 
+    while (E)
+    {
+        if(E->aresta) inserirAresta(copia, E->aresta->A->rotulo, E->aresta->B->rotulo);
+        E = E->proximo;
+    }
+    return copia;
+} 
+
+bool excluirGrafo(Grafo* grafo)
+{
+    if(!grafo) return false;
+    removerVertice(grafo, "_", true);
+    free(grafo->E);
+    free(grafo->V);
+    free(grafo);
+    return true;
+}
+
 int grauVertice(Rotulo *valor, Grafo *grafo)
 {
-    ListaVertice *aux = grafo->V;
+    Grafo *copia = copiarGrafo(grafo);
+    ListaVertice *aux = copia->V;
     int grau = 0;
     while (aux)
     {
-        if(buscarAresta(valor, aux->vertice->rotulo, grafo)) grau++;
-        if(buscarAresta(aux->vertice->rotulo, valor, grafo)) grau++;
-
+        if(removerAresta(copia, valor, "_", false)) grau++;
+        if(removerAresta(copia, "_", valor, false)) grau++;
         aux = aux->proximo; 
     }
+    excluirGrafo(copia);
     return grau;
 }
 
 bool saoVizinhos(Rotulo *valorA, Rotulo *valorB, Grafo *grafo)
 {
     return buscarAresta(valorA, valorB, grafo);
+}
+
+bool ehEuleriano(Grafo *grafo)
+{
+    
 }
 
 void imprimirGrafo(Grafo *grafo)
