@@ -7,6 +7,8 @@
 #define SAOVIZINHOS 5
 #define REMOVERVERTICE 6
 #define REMOVERARESTA 7
+#define EHEULERIANO 8
+#define LERARQUIVO 9
 #define TAMANHOROTULO 10
 
 
@@ -25,6 +27,8 @@ void menuInterface()
         printf("Verificar se Vertices sao vizinhos -> \"5\"\n");
         printf("Remover Vertice --------------------> \"6\"\n");
         printf("Remover Aresta ---------------------> \"7\"\n");
+        printf("Verificar se possui ciclo euleriano > \"8\"\n");
+        printf("Carregar arquivo JSON --------------> \"9\"\n");
         printf("Insira o ID da operacao: ");
         scanf("%d", &acao);
 
@@ -87,6 +91,24 @@ void menuInterface()
             printf("Rotulo do segundo vertice: ");
             scanf(" %s", rotuloB);
             removerAresta(grafo, rotuloA, rotuloB, false);
+            imprimirGrafo(grafo);
+        }
+        else if(acao == EHEULERIANO)
+        {
+            ehEuleriano(grafo);
+            imprimirGrafo(grafo);
+        }
+        else if(acao == LERARQUIVO)
+        {
+            excluirGrafo(grafo);
+            grafo = criarGrafo();
+            char caminho[100];
+            printf("Caminho do arquivo: ");
+            scanf(" %[^\n]", caminho);
+            if(!carregarArquivoJson(grafo, caminho))
+            {
+                grafo = criarGrafo();
+            }
             imprimirGrafo(grafo);
         }
         else if(acao == SAIR) printf("Programa encerrado.\n");
