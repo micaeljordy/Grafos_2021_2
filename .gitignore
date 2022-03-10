@@ -1,0 +1,4 @@
+.vscode/
+cwd/
+*.exe
+*.json
